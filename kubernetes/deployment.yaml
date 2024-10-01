@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: users-eks
+  namespace: users
+spec:
+  selector:
+    matchLabels:
+      app: users-eks
+  template:
+    metadata:
+      labels:
+        app: users-eks
+      annotations:
+        ad.datadoghq.com/users.logs: '[{"source": "nodejs","service":"users-eks"}]'
+        com.datadoghq.ad.logs: '[{"source": "nodejs","service":"users-eks"}]'
+    spec:
+      containers:
+      - name: users-eks
+        # image: raghavenderreddylonka/shopping_users:v13
+        #image: harshkhokhar/nodejs:v110
+        image: harshkhokhar/nodejs:v1
+        env:
+        - name: DB_NAME
+          value: Shopping_Cart
+        - name: DB_PASSWORD
+          value: rdsadmin
+        - name: DB_HOST
+          value: database-1.cf6c8yamwday.us-east-1.rds.amazonaws.com
+        - name: ALLOWED_IPS
+          value: a509c2fce57fe4879a9938b6c407cf0b-1397642242.us-east-1.elb.amazonaws.com
+        ports:
+        - containerPort: 8000
